@@ -1,0 +1,53 @@
+import os
+import sys
+
+def removeReplace(text, string, newstr):
+    textList = text.split()
+    for word in textList:
+        if word == string:
+            i = textList.index(word)
+            textList.remove(word)
+            textList.insert(i, newstr)
+        for punct in [".", "!", "?", ",", ":", ";"]:
+            if word[-1] == punct:
+                   if word[:-1] == string:
+                       i = textList.index(word)
+                       textList.remove(word)
+                       textList.insert(i, newstr + punct)
+    textout = ""
+    for word in textList:
+        textout += word + " " 
+    return textout
+
+
+def __main__():
+    string = sys.argv[1]
+    if string == "":
+        return "Well, that was easy."
+    newstr = sys.argv[2]
+    textfiles = []
+    cwd = os.getcwd()
+    for thing in os.listdir(cwd):
+        if thing.endswith(".txt"):
+            textfiles.append(thing)
+    for text in textfiles:
+        filename = text
+        f = open(filename, "r")
+        text = f.readlines()[0]  
+        i = text.find(string)     
+        if i == -1:
+            f.close()
+        else :
+            newtext = text
+            while i > 0:
+                newtext = removeReplace(newtext, string, newstr)
+                i = newtext.find(string)
+            if not os.path.exists(newstr):
+                os.makedirs(newstr)
+            path = newstr + "/" + filename
+            g = open(path, "w")
+            g.write(newtext)
+            g.close()
+    print("DONE!")
+
+__main__()
